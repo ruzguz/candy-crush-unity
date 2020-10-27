@@ -12,6 +12,7 @@ public class CandyController : MonoBehaviour
 
     // Component vars
     private SpriteRenderer _spriteRenderer;
+    private Animator _animator;
 
     // Aux vars
     private bool _isSelected = false;
@@ -24,6 +25,7 @@ public class CandyController : MonoBehaviour
 
     void Awake() {
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        _animator = GetComponent<Animator>();
     }
 
     // Start is called before the first frame update
@@ -36,5 +38,16 @@ public class CandyController : MonoBehaviour
     void Update()
     {
         
+    }
+
+    // Update Sprite and Animator 
+    public void SetGraphycs(Sprite s, string candy) {
+        _spriteRenderer.sprite = s;
+        _animator.runtimeAnimatorController = Resources.Load("Animations/Candies/"+
+                                                             candy+
+                                                             "/"+
+                                                             candy+
+                                                             "AnimationController") as RuntimeAnimatorController;;
+
     }
 }

@@ -6,7 +6,8 @@ public class BoardManager : MonoBehaviour
 {
     // General vars
     public static BoardManager sharedInstance;
-    public List<Sprite> prefabs = new List<Sprite>();
+    public List<Sprite> sprites = new List<Sprite>();
+    private string[] _animators = { "Sun", "Boat", "Wave", "Watermelon", "Conch", "Fish" };
     public GameObject currentCandy;
     public int xSize, ySize;
 
@@ -54,6 +55,11 @@ public class BoardManager : MonoBehaviour
                                                           0),
                                                   currentCandy.transform.rotation
                                                   );
+                // Setting new candy values
+                int randomNumber = Random.Range(0, 6);
+                Sprite s = sprites[randomNumber];
+                string candyName = _animators[randomNumber];
+                newCandy.GetComponent<CandyController>().SetGraphycs(s,candyName);
                 newCandy.name = string.Format("Candy[{0}][{1}]", x, y);
                 candies[x, y] = newCandy;
             }
