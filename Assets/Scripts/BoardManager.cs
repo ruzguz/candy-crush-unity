@@ -46,6 +46,8 @@ public class BoardManager : MonoBehaviour
         float startX = this.transform.position.x;
         float startY = this.transform.position.y;
 
+        int idx = -1;
+
         for (int x = 0; x < xSize; x++) {
             for (int y = 0; y < ySize; y++) {
                 // Intantiating new candy
@@ -55,12 +57,25 @@ public class BoardManager : MonoBehaviour
                                                           0),
                                                   currentCandy.transform.rotation
                                                   );
+
+                // Check candy is not the same as neighbour
+                do {
+                    idx = Random.Range(0, sprites.Count);
+                } while( 
+                    (x > 0 && idx == candies[x-1,y].GetComponent<CandyController>().id) ||
+                    (y > 0 && idx == candies[x,y-1].GetComponent<CandyController>().id)
+                    );
+
                 // Setting new candy values
-                int randomNumber = Random.Range(0, 6);
+                int randomNumber = Random.Range(0, sprites.Count);
                 Sprite s = sprites[randomNumber];
                 string candyName = _animators[randomNumber];
                 newCandy.GetComponent<CandyController>().SetGraphycs(s,candyName);
+                newCandy.GetComponent<CandyController>().id = idx;
+
                 newCandy.name = string.Format("Candy[{0}][{1}]", x, y);
+
+                newCandy.transform.parent = this.transform;
                 candies[x, y] = newCandy;
             }
         }
