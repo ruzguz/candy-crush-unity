@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class CandyController : MonoBehaviour
 {
+    // CONSTs
+    const string STATE_IS_SELECTED = "isSelected";
+
 
     // General vars
     private static Color _selectedColor = new Color(0.5f, 0.5f, 0.5f, 1.0f);
@@ -28,17 +31,39 @@ public class CandyController : MonoBehaviour
         _animator = GetComponent<Animator>();
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+
+    public void SelectCandy() {
+        _isSelected = true;
+        _animator.SetBool(STATE_IS_SELECTED, true);
+        _spriteRenderer.color = _selectedColor;
+        _previusSelected = gameObject.GetComponent<CandyController>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public void DeselectCandy() {
+        _isSelected = false;
+        _animator.SetBool(STATE_IS_SELECTED, false);
+        _spriteRenderer.color = Color.white;
+        _previusSelected = null;
     }
+
+    private void OnMouseDown() {
+        if (_spriteRenderer.sprite == null ||
+            BoardManager.sharedInstance.isShifting) {
+                return;
+            }
+
+            if (_isSelected) {
+                DeselectCandy();
+            } else { 
+                if (_previusSelected ==  null) {
+                    SelectCandy();
+                } else {
+                    _previusSelected.DeselectCandy();
+                    //SelectCandy();
+                }
+            }
+    }
+
 
     // Update Sprite and Animator 
     public void SetGraphycs(Sprite s, string candy) {
