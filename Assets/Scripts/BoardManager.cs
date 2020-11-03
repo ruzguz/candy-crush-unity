@@ -69,9 +69,8 @@ public class BoardManager : MonoBehaviour
                     );
 
                 // Setting new candy values
-                int randomNumber = Random.Range(0, sprites.Count);
-                Sprite s = sprites[randomNumber];
-                string candyName = _animators[randomNumber];
+                Sprite s = sprites[idx];
+                string candyName = _animators[idx];
                 newCandy.GetComponent<CandyController>().SetGraphycs(s,candyName);
                 newCandy.GetComponent<CandyController>().id = idx;
 
