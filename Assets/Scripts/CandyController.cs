@@ -58,6 +58,7 @@ public class CandyController : MonoBehaviour
                 if (_previusSelected ==  null) {
                     SelectCandy();
                 } else {
+                    SwapCandies(_previusSelected);
                     _previusSelected.DeselectCandy();
                     //SelectCandy();
                 }
@@ -72,7 +73,26 @@ public class CandyController : MonoBehaviour
                                                              candy+
                                                              "/"+
                                                              candy+
-                                                             "AnimationController") as RuntimeAnimatorController;;
+                                                             "AnimationController") as RuntimeAnimatorController;
+    }
+
+    // Funciton to swap candies
+    public void SwapCandies(CandyController newCandy) {
+        // Check if the candies are the same
+        if (this._spriteRenderer.sprite == newCandy._spriteRenderer.sprite) {
+            return;
+        }
+
+        // Swapping animator 
+        RuntimeAnimatorController auxAnimator = this._animator.runtimeAnimatorController;
+        this._animator.runtimeAnimatorController = newCandy._animator.runtimeAnimatorController;
+        newCandy._animator.runtimeAnimatorController = auxAnimator;
+
+        // Swapping ids
+        int auxID = this.id;
+        this.id = newCandy.id;
+        newCandy.id = auxID;
+
 
     }
 }
