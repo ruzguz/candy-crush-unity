@@ -58,9 +58,13 @@ public class CandyController : MonoBehaviour
                 if (_previusSelected ==  null) {
                     SelectCandy();
                 } else {
-                    SwapCandies(_previusSelected);
-                    _previusSelected.DeselectCandy();
-                    //SelectCandy();
+                    if (CanSwap()) {
+                        SwapCandies(_previusSelected);
+                        _previusSelected.DeselectCandy();
+                    } else {
+                        _previusSelected.DeselectCandy();
+                        SelectCandy();
+                    }
                 }
             }
     }
@@ -94,5 +98,31 @@ public class CandyController : MonoBehaviour
         newCandy.id = auxID;
 
 
+    }
+
+    // Function to get a neightbor
+    private GameObject GetNeightbor(Vector2 direction) {
+        RaycastHit2D hit = Physics2D.Raycast(this.transform.position,
+                                             direction);
+
+        if (hit.collider != null) {
+            return hit.collider.gameObject;
+        } else {
+            return null;
+        }
+    }
+
+    // Function to get all neightbors
+    private List<GameObject> GetAllNeightbors() {
+        List<GameObject> neightbors = new List<GameObject>();
+        foreach( Vector2 direction in adjacentDirections) {
+            neightbors.Add(GetNeightbor(direction));
+        }
+
+        return neightbors;
+    }
+
+    bool CanSwap() {
+        return GetAllNeightbors().Contains(_previusSelected.gameObject);
     }
 }
