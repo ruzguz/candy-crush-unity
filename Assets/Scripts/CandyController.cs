@@ -6,6 +6,7 @@ public class CandyController : MonoBehaviour
 {
     // CONSTs
     const string STATE_IS_SELECTED = "isSelected";
+    const int MIN_CANDIES_TO_MATCH = 2;
 
 
     // General vars
@@ -124,5 +125,25 @@ public class CandyController : MonoBehaviour
 
     bool CanSwap() {
         return GetAllNeightbors().Contains(_previusSelected.gameObject);
+    }
+
+    // Function to find match
+    private List<GameObject> FindMatch(Vector2 direction, bool isFirstCandy = true) {
+        List<GameObject> matchingCandies = new List<GameObject>();
+        
+        RaycastHit2D hit = Physics2D.Raycast(this.transform.position, 
+                                             direction);
+        
+        // Check if it doesn't have a neightbor or if the neightbor is a different candy
+        if (hit.collider == null || hit.collider.GetComponent<CandyController>().id == this.id) {
+            if (!isFirstCandy) 
+                matchingCandies.Add(this.gameObject);
+            return matchingCandies;
+        }
+
+        // recursive call in each direction
+        matchingCandies.AddRange(hit.collider.GetComponent<CandyController>().FindMatch(direction, false));
+
+        return matchingCandies;
     }
 }
