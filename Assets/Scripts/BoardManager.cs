@@ -17,6 +17,8 @@ public class BoardManager : MonoBehaviour
 
     public bool isShifting { get; set; }
 
+    public const int MIN_CANDIES_TO_MATCH = 2;
+
 
 
     // Start is called before the first frame update

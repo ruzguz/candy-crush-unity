@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class CandyController : MonoBehaviour
 {
     // CONSTs
     const string STATE_IS_SELECTED = "isSelected";
-    const int MIN_CANDIES_TO_MATCH = 2;
+    
 
 
     // General vars
@@ -61,7 +62,10 @@ public class CandyController : MonoBehaviour
                 } else {
                     if (CanSwap()) {
                         SwapCandies(_previusSelected);
+                        _previusSelected.FindAllMatches();
                         _previusSelected.DeselectCandy();
+                        //FindAllMatches(); 
+
                     } else {
                         _previusSelected.DeselectCandy();
                         SelectCandy();
@@ -131,19 +135,54 @@ public class CandyController : MonoBehaviour
     private List<GameObject> FindMatch(Vector2 direction, bool isFirstCandy = true) {
         List<GameObject> matchingCandies = new List<GameObject>();
         
-        RaycastHit2D hit = Physics2D.Raycast(this.transform.position, 
-                                             direction);
-        
-        // Check if it doesn't have a neightbor or if the neightbor is a different candy
-        if (hit.collider == null || hit.collider.GetComponent<CandyController>().id == this.id) {
-            if (!isFirstCandy) 
-                matchingCandies.Add(this.gameObject);
-            return matchingCandies;
-        }
+        RaycastHit2D hit = Physics2D.Raycast(this.transform.position,direction);
 
-        // recursive call in each direction
-        matchingCandies.AddRange(hit.collider.GetComponent<CandyController>().FindMatch(direction, false));
+        while (hit.collider != null && hit.collider.GetComponent<CandyController>().id == this.id) {
+            matchingCandies.Add(hit.collider.gameObject);
+            hit = Physics2D.Raycast(hit.collider.transform.position, direction);
+        }
 
         return matchingCandies;
     }
+
+    private bool ClearMatch(Vector2[] directions) {
+        List<GameObject> matchingCandies = new List<GameObject>();
+
+        foreach(Vector2 direction in directions) {
+            matchingCandies.AddRange(FindMatch(direction));
+        }
+
+        if (matchingCandies.Count() >= BoardManager.MIN_CANDIES_TO_MATCH) {
+            foreach(GameObject candy in matchingCandies) {
+                candy.GetComponent<SpriteRenderer>().sprite = null;
+                candy.GetComponent<Animator>().enabled = false;
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    public void FindAllMatches() {
+
+        if (_spriteRenderer.sprite == null) {
+            return;
+        }
+
+        bool hMatch = ClearMatch(new Vector2[2]{
+            Vector2.left, 
+            Vector2.right
+        });
+
+        bool vMatch = ClearMatch(new Vector2[2]{
+            Vector2.up,
+            Vector2.down
+        });
+
+        if (hMatch || vMatch) {
+            this._spriteRenderer.sprite = null;
+            this._animator.enabled = false;
+        }
+    }
+
 }
