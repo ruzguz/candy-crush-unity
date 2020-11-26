@@ -82,7 +82,42 @@ public class BoardManager : MonoBehaviour
                 candies[x, y] = newCandy;
             }
         }
+    }
 
+    public IEnumerator FindNullCandies() {
+        for (int x = 0; x < xSize ; x++) {
+            for (int y = 0; y < ySize ; y++) {
+                if (candies[x,y].GetComponent<Animator>().enabled == false) {
+                    yield return StartCoroutine(MakeCandiesFall(x,y));
+                    break;
+                }
+            }
+        }
+    }
+
+    private IEnumerator MakeCandiesFall(int x, int yStart, float shiftDelay = 0.1f) {
+        isShifting = true;
+
+        for (int y = yStart; y < ySize; y++) {
+            CandyController clearedCandy = candies[x,y].GetComponent<CandyController>();
+            if (candies[x,y].GetComponent<Animator>().enabled == false) {
+                // If the candy is cleared we gonna make other candies fall
+                for (int i = y+1; i < ySize; i++) {
+                    yield return new WaitForSeconds(shiftDelay);
+                    CandyController fallingCandy = candies[x,i].GetComponent<CandyController>();
+                    if (candies[x,i].GetComponent<Animator>().enabled == true) {
+                        // set animator for cleared candy
+                        clearedCandy.SetGraphycs(null, _animators[fallingCandy.id]);
+                        clearedCandy.GetComponent<Animator>().enabled = true;
+                        // disable animator for falling candy
+                        fallingCandy.GetComponent<Animator>().enabled = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        isShifting = false;
 
     }
 }

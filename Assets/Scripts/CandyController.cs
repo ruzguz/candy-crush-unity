@@ -64,7 +64,10 @@ public class CandyController : MonoBehaviour
                         SwapCandies(_previusSelected);
                         _previusSelected.FindAllMatches();
                         _previusSelected.DeselectCandy();
-                        //FindAllMatches(); 
+                        FindAllMatches(); 
+
+                        StopCoroutine(BoardManager.sharedInstance.FindNullCandies());
+                        StartCoroutine(BoardManager.sharedInstance.FindNullCandies());
 
                     } else {
                         _previusSelected.DeselectCandy();
@@ -184,5 +187,7 @@ public class CandyController : MonoBehaviour
             this._animator.enabled = false;
         }
     }
+
+
 
 }
