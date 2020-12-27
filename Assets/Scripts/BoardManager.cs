@@ -95,7 +95,7 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    private IEnumerator MakeCandiesFall(int x, int yStart, float shiftDelay = 0.1f) {
+    private IEnumerator MakeCandiesFall(int x, int yStart, float shiftDelay = 0.03f) {
         isShifting = true;
 
         for (int y = yStart; y < ySize; y++) {
