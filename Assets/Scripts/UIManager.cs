@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+
+    public static UIManager sharedInstance;
+
     public Text scoreText;
     public Text movesText;
     private int _moveCounter;
@@ -40,6 +43,13 @@ public class UIManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (sharedInstance == null)
+        {
+            sharedInstance = this;
+        } else {
+            Destroy(this);
+        }
+
         _moveCounter = 30;
         movesText.text = "Moves: "+_moveCounter;
 
