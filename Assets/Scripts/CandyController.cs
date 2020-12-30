@@ -57,6 +57,8 @@ public class CandyController : MonoBehaviour
             if (_isSelected) {
                 DeselectCandy();
             } else { 
+                UIManager.sharedInstance.MoveCounter++;
+                UIManager.sharedInstance.Score += 100;
                 if (_previusSelected ==  null) {
                     SelectCandy();
                 } else {
